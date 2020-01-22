@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Counters from "./component/counters";
+import Navbar from "./component/navbar"
 import "./App.css";
 
 class App extends Component {
@@ -12,11 +13,28 @@ class App extends Component {
     ]
   };
 
+  constructor(props){
+    super(props);
+    console.log("App - Constructor", this.props);
+  }
+
+  componentDidMount () {
+    console.log("App - Did Mount");
+  }
+
   handleIncrement = counter => {
     const counters = [...this.state.counters];
     const index = counters.indexOf(counter);
     counters[index] = { ...counter };
     counters[index].value++;
+    this.setState({ counters });
+  };
+
+  handleDecrement = counter => {
+    const counters = [...this.state.counters];
+    const index = counters.indexOf(counter);
+    counters[index] = { ...counter };
+    counters[index].value--;
     this.setState({ counters });
   };
 
@@ -37,12 +55,16 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Counters
-          counters={this.state.counters}
-          onReset={this.handleReset}
-          onDelete={this.handleDelete}
-          onIncrement={this.handleIncrement}
-        />
+        <Navbar totalCounters={this.state.counters.filter(c => c.value > 0).length}/>
+        <main role="main" className="container">
+          <Counters
+            counters={this.state.counters}
+            onReset={this.handleReset}
+            onDelete={this.handleDelete}
+            onIncrement={this.handleIncrement}
+            onDecrement={this.handleDecrement}
+          />
+        </main>
       </div>
     );
   }
