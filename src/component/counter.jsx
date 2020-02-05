@@ -1,71 +1,53 @@
-import React, { Component } from "react";
+import React from "react";
+import { connect } from "react-redux";
+import { onIncrement, onDecrement, onDelete } from "../actions";
 
-class Counter extends Component {
-
-  componentDidUpdate(prevProps, prevState){
-    console.log("Counter - Component did Update");
-    console.log('prevProps ', prevProps);
-    console.log('prevState ', prevState);
-    if(prevProps.counter.value !== this.props.counter.value){
-      //Ajax call to get new data
-      console.log("GET NEW DATA!!!")
-
-    }
-  }
-
-  componentWillUnmount(){
-    console.log("Counter - Unmount");
-  }
-
-  render() {
-    const {counter, onIncrement, onDecrement, onDelete} = this.props;
-    console.log("Counter - Rendered");
-    return (
-      <div className='row' >
-        <div className="col-1">
-          <span className={this.getBadgeClasses()}>{this.formatCount()}</span>
-          {/* <button
-          onClick={() => this.props.onIncrement(this.props.counter)}
-          className="btn btn-secondary btn-sm"
-        >
-          Increment
-        </button> */}
-          <div className="col d-flex">
-            <button
-              className="btn btn-secondary btn-sm d-inline-flex"
-              onClick={() => onIncrement(counter)}
-            >
-              +
-            </button>
-            <button
-              className="btn btn-secondary btn-sm m-2 d-inline-flex"
-              onClick={() => onDecrement(counter)}
-              disabled={counter.value === 0 ? "disabled" : ""}
-            >
-              -
-            </button>
-            <button
-              onClick={() => onDelete(counter.id)}
-              className="btn btn-danger btn-sm m-2 d-inline-flex"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  getBadgeClasses() {
+// class Counter extends Component {
+const Counter = ({ counter, onIncrement, onDecrement, onDelete }) => {
+  // render() {
+  // const { counter, onIncrement, onDecrement, onDelete } = this.props;
+  const getBadgeClasses = () => {
     let classes = "badge m-2 badge-";
-    classes += this.props.counter.value === 0 ? "warning" : "primary";
+    classes += counter.value === 0 ? "warning" : "primary";
     return classes;
-  }
+  };
 
-  formatCount() {
-    const { value } = this.props.counter;
+  const formatCount = () => {
+    const { value } = counter;
     return value === 0 ? "Zero" : value;
-  }
-}
+  };
 
-export default Counter;
+  return (
+    <div className="row">
+      <div className="col-1">
+        <span className={getBadgeClasses()}>{formatCount()}</span>
+      </div>
+      <div className="col">
+        <button onClick={onIncrement} className="btn btn-secondary btn-sm">
+          +
+        </button>
+        <button
+          onClick={onDecrement}
+          className="btn btn-secondary btn-sm m-2"
+          disabled={counter.value === 0 ? "disabled" : ""}
+        >
+          -
+        </button>
+        <button onClick={onDelete} className="bnt btn-danger btn-sm">
+          Delete
+        </button>
+      </div>
+    </div>
+  );
+  // }
+};
+
+const mapDispatchtoProps = (dispatch, ownProps) => {
+  const counter = ownProps.counter;
+  return {
+    onIncrement: () => dispatch(onIncrement(counter)),
+    onDecrement: () => dispatch(onDecrement(counter)),
+    onDelete: () => dispatch(onDelete(counter.id))
+  };
+};
+export default connect(null, mapDispatchtoProps)(Counter);
